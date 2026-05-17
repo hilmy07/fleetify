@@ -135,7 +135,6 @@ fleetify/
 | report_id      | uint   |
 | item_id        | uint   |
 | quantity       | uint   |
-| notes          | string |
 | price_snapshot | float  |
 
 ---
