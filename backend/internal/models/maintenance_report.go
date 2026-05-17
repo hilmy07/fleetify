@@ -10,4 +10,7 @@ type MaintenanceReport struct {
 	InitialPost string `gorm:"not null" json:"initial_post"`
 	ProofPhoto  string `gorm:"not null" json:"proof_photo"`
 	CreatedAt   string `gorm:"not null" json:"created_at"`
+
+	Vehicle Vehicle      `gorm:"foreignKey:VehicleID" json:"vehicle"`
+	Items   []ReportItem `gorm:"foreignKey:ReportId" json:"items"`
 }

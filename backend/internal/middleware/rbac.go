@@ -1,16 +1,40 @@
 package middleware
 
-import "github.com/gofiber/fiber"
+import (
+	"fleetify/internal/config"
+	"fleetify/internal/models"
 
-func RBACMiddleware(requiredRole string) func(c *fiber.Ctx) error {
+	"github.com/gofiber/fiber/v2"
+)
+
+func RBACMiddleware(role string) fiber.Handler {
 	return func(c *fiber.Ctx) error {
-		// Implement your RBAC logic here, e.g., check user role from JWT token or session
-		// If the user does not have the required role, return an error
-		// Example:
-		// userRole := getUserRoleFromToken(c)
-		// if userRole != requiredRole {
-		//     return c.Status(fiber.StatusForbidden).JSON(fiber.Map{"error": "Forbidden"})
-		// }
-		return nil
+
+		userID := c.Get("X-User-ID")
+
+		if userID == "" {
+			return c.Status(401).JSON(fiber.Map{
+				"message": "missing user id",
+			})
+		}
+
+		var user models.User
+
+		err := config.DB.First(&user, userID).Error
+		if err != nil {
+			return c.Status(404).JSON(fiber.Map{
+				"message": "user not found",
+			})
+		}
+
+		if user.Role != role {
+			return c.Status(403).JSON(fiber.Map{
+				"message": "forbidden",
+			})
+		}
+
+		c.Locals("user_id", user.ID)
+
+		return c.Next()
 	}
 }

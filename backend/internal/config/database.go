@@ -18,6 +18,7 @@ func ConnectDB() {
 		os.Getenv("DB_PORT"),
 		os.Getenv("DB_NAME"),
 	)
+	fmt.Println("Database connected")
 	db, err := gorm.Open(mysql.Open(dsn), &gorm.Config{})
 	if err != nil {
 		panic("failed to connect database")
